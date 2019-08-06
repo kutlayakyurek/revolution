@@ -1,22 +1,15 @@
-package com.ka.revolution.util;
+package com.ka.revolution.repository;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.ka.revolution.model.Account;
+import com.ka.revolution.model.persistence.Account;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class InMemoryAccountManager implements AccountManager {
+public class InMemoryAccountRepository implements AccountRepository {
 
-    private static final InMemoryAccountManager INSTANCE = new InMemoryAccountManager();
-
-    private final ConcurrentHashMap<Long, Account> accountMap;
-
-    private InMemoryAccountManager() {
-        accountMap = new ConcurrentHashMap<>();
-    }
+    private static final ConcurrentHashMap<Long, Account> accountMap = new ConcurrentHashMap<>();
 
     /**
      * Transfers amount between origination and destination acquiring shared transaction lock.
@@ -107,10 +100,6 @@ public class InMemoryAccountManager implements AccountManager {
         accountMap.put(accountId, newAccount);
 
         return newAccount;
-    }
-
-    public static InMemoryAccountManager getInstance() {
-        return INSTANCE;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ka.revolution.model;
+package com.ka.revolution.model.persistence;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
