@@ -12,13 +12,19 @@ public abstract class AbstractController {
 
     protected static final String PARAMETER_ID = "id";
 
-    public void sendResponse(final Response response, final String content) {
+    protected void validateRequestBody(final Response response, final Object object) {
+        if (object == null) {
+            sendErrorResponse(response, "Request body can not be empty", Status._400);
+        }
+    }
+
+    protected void sendResponse(final Response response, final String content) {
         response.setStatus(Status._200);
         response.setContentType(MediaType._json);
         response.send(content);
     }
 
-    public void sendErrorResponse(final Response response, final String message, final Status status) {
+    protected void sendErrorResponse(final Response response, final String message, final Status status) {
         final ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setErrorMessage(message);
 
