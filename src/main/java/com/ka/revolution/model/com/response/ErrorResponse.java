@@ -1,4 +1,4 @@
-package com.ka.revolution.model.com;
+package com.ka.revolution.model.com.response;
 
 import lombok.Data;
 

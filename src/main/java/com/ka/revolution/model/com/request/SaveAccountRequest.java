@@ -1,4 +1,4 @@
-package com.ka.revolution.model.com;
+package com.ka.revolution.model.com.request;
 
 import lombok.Data;
 import lombok.NonNull;

@@ -4,6 +4,8 @@ import com.ka.revolution.model.persistence.Account;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -11,14 +13,6 @@ public class InMemoryAccountRepository implements AccountRepository {
 
     private static final ConcurrentHashMap<Long, Account> accountMap = new ConcurrentHashMap<>();
 
-    /**
-     * Transfers amount between origination and destination acquiring shared transaction lock.
-     *
-     * @param originatorAccountId  Unique id of originator
-     * @param destinationAccountId Unique id of destination
-     * @param amount               Transfer amount
-     * @return Money transfer result
-     */
     public boolean transferMoney(
             final Long originatorAccountId,
             final Long destinationAccountId,
@@ -46,6 +40,9 @@ public class InMemoryAccountRepository implements AccountRepository {
             latterLock = originatorAccountId;
         }
 
+        /**
+         * If locks are ordered either ascending or descending, it prevents dead lock
+         */
         synchronized (formerLock) {
             synchronized (latterLock) {
                 if (originatorAccount.getAmount().compareTo(amount) < 0) {
@@ -65,12 +62,6 @@ public class InMemoryAccountRepository implements AccountRepository {
         return true;
     }
 
-    /**
-     * Returns account by unique id from in memory store.
-     *
-     * @param id Unique account id
-     * @return Found account
-     */
     public Account findAccountById(final Long id) {
         if (id == null) {
             log.debug("Given id is null");
@@ -80,13 +71,11 @@ public class InMemoryAccountRepository implements AccountRepository {
         return accountMap.get(id);
     }
 
-    /**
-     * Saves new account with customer fullname and initial amount. Id is generated automatically
-     *
-     * @param amount   Initial money amount
-     * @param fullName Customer name and surname
-     * @return Generated account
-     */
+    @Override
+    public List<Account> getAccounts() {
+        return new ArrayList<>(accountMap.values());
+    }
+
     @Override
     public Account saveAccount(final BigDecimal amount, final String fullName) {
         final Long accountId = System.nanoTime();
