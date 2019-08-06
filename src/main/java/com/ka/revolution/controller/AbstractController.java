@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractController {
 
+    protected static final String PARAMETER_ID = "id";
+
     public void sendResponse(final Response response, final String content) {
         response.setStatus(Status._200);
         response.setContentType(MediaType._json);

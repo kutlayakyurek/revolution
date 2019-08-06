@@ -2,6 +2,7 @@ package com.ka.revolution.controller;
 
 import com.ka.revolution.model.com.request.SaveAccountRequest;
 import com.ka.revolution.model.com.response.GetAccountsResponse;
+import com.ka.revolution.model.persistence.Account;
 import com.ka.revolution.service.AccountService;
 import com.ka.revolution.util.FileUtil;
 import express.DynExpress;
@@ -25,8 +26,21 @@ public class AccountController extends AbstractController {
     public void getAccounts(final Request request, final Response response) throws IOException {
         final GetAccountsResponse getAccountsResponse = new GetAccountsResponse();
         getAccountsResponse.setAccounts(accountService.getAccounts());
-        
+
         sendResponse(response, FileUtil.convertObjectToJson(getAccountsResponse));
+    }
+
+    @DynExpress(context = "/account/:id", method = RequestMethod.GET)
+    public void getAccountById(final Request request, final Response response) throws IOException {
+        final String id = request.getParam(PARAMETER_ID);
+        final Account foundAccount = accountService.findAccountById(Long.valueOf(id));
+
+        if (foundAccount == null) {
+            sendErrorResponse(response, "Could not find the account -> id: " + id, Status._404);
+            return;
+        }
+
+        sendResponse(response, FileUtil.convertObjectToJson(foundAccount));
     }
 
     @DynExpress(context = "/account", method = RequestMethod.POST)
