@@ -1,7 +1,7 @@
 package com.ka.revolution.service;
 
 import com.ka.revolution.model.com.request.SaveAccountRequest;
-import com.ka.revolution.model.com.request.TransferRequest;
+import com.ka.revolution.model.com.request.TransferMoneyRequest;
 import com.ka.revolution.model.persistence.Account;
 import com.ka.revolution.repository.AccountRepository;
 import lombok.AllArgsConstructor;
@@ -38,10 +38,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void transfer(final Long accountId, final TransferRequest sendMoneyRequest) {
-        log.debug("Sending money({}) from origination -> id: {} to destination -> id: {}", sendMoneyRequest.getAmount(), accountId, sendMoneyRequest.getDestinationAccountId());
+    public void transferMoney(final Long accountId, final TransferMoneyRequest transferMoneyRequest) {
+        log.debug("Sending money({}) from origination -> id: {} to destination -> id: {}",
+                transferMoneyRequest.getAmount(), accountId, transferMoneyRequest.getDestinationAccountId());
 
-        accountRepository.transferMoney(accountId, sendMoneyRequest.getDestinationAccountId(), sendMoneyRequest.getAmount());
+        accountRepository.transferMoney(accountId,
+                transferMoneyRequest.getDestinationAccountId(), transferMoneyRequest.getAmount());
     }
 
 }

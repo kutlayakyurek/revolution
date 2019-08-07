@@ -1,13 +1,15 @@
 package com.ka.revolution.unit;
 
+import com.ka.revolution.TestConstants;
 import com.ka.revolution.model.persistence.Account;
 import com.ka.revolution.repository.AccountRepository;
 import com.ka.revolution.repository.InMemoryAccountRepository;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+
+import static org.junit.Assert.*;
 
 public class InMemoryAccountRepositoryTest {
 
@@ -19,29 +21,29 @@ public class InMemoryAccountRepositoryTest {
     @Before
     public void beforeTests() {
         accountRepository = new InMemoryAccountRepository();
-        firstAccount = accountRepository.saveAccount(new BigDecimal(100000), "Iron Man");
-        secondAccount = accountRepository.saveAccount(new BigDecimal(150000), "Captain America");
-        thirdAccount = accountRepository.saveAccount(new BigDecimal(200000), "Ant Man");
+        firstAccount = accountRepository.saveAccount(TestConstants.FIRST_ACCOUNT_AMOUNT, TestConstants.FIRST_ACCOUNT_NAME);
+        secondAccount = accountRepository.saveAccount(TestConstants.SECOND_ACCOUNT_AMOUNT, TestConstants.SECOND_ACCOUNT_NAME);
+        thirdAccount = accountRepository.saveAccount(TestConstants.THIRD_ACCOUNT_AMOUNT, TestConstants.THIRD_ACCOUNT_NAME);
     }
 
     @Test
     public void whenSaveAccount_thenSuccess() {
-        Assert.assertEquals(BigDecimal.valueOf(100000), firstAccount.getAmount());
-        Assert.assertEquals("Iron Man", firstAccount.getFullName());
-        Assert.assertNotNull(firstAccount.getId());
+        assertEquals(TestConstants.FIRST_ACCOUNT_AMOUNT, firstAccount.getAmount());
+        assertEquals(TestConstants.FIRST_ACCOUNT_NAME, firstAccount.getFullName());
+        assertNotNull(firstAccount.getId());
     }
 
     @Test
     public void whenFindAccountById_thenSuccess() {
         final Account foundAccount = accountRepository.findAccountById(firstAccount.getId());
-        Assert.assertEquals(BigDecimal.valueOf(100000), foundAccount.getAmount());
-        Assert.assertEquals("Iron Man", foundAccount.getFullName());
-        Assert.assertNotNull(foundAccount.getId());
+        assertEquals(TestConstants.FIRST_ACCOUNT_AMOUNT, foundAccount.getAmount());
+        assertEquals(TestConstants.FIRST_ACCOUNT_NAME, foundAccount.getFullName());
+        assertNotNull(foundAccount.getId());
     }
 
     @Test
     public void whenFindAccountByNotExistingId_thenReturnNull() {
-        Assert.assertNull(accountRepository.findAccountById(100L));
+        assertNull(accountRepository.findAccountById(100L));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -51,29 +53,29 @@ public class InMemoryAccountRepositoryTest {
 
     @Test
     public void whenInvalidOriginatorAccountIdOnMoneyTransfer_thenFail() {
-        Assert.assertFalse(accountRepository.transferMoney(100L, secondAccount.getId(), BigDecimal.valueOf(500000)));
+        assertFalse(accountRepository.transferMoney(100L, secondAccount.getId(), BigDecimal.valueOf(500000)));
     }
 
     @Test
     public void whenInvalidDestinationAccountIdOnMoneyTransfer_thenFail() {
-        Assert.assertFalse(accountRepository.transferMoney(firstAccount.getId(), 100l, BigDecimal.valueOf(500000)));
+        assertFalse(accountRepository.transferMoney(firstAccount.getId(), 100l, BigDecimal.valueOf(500000)));
     }
 
     @Test
     public void whenNullOriginationAccountIdOnMoneyTransfer_thenFail() {
-        Assert.assertFalse(accountRepository.transferMoney(null, secondAccount.getId(), BigDecimal.valueOf(500000)));
+        assertFalse(accountRepository.transferMoney(null, secondAccount.getId(), BigDecimal.valueOf(500000)));
     }
 
     @Test
     public void whenNullDestinationAccountIdOnMoneyTransfer_thenFail() {
-        Assert.assertFalse(accountRepository.transferMoney(firstAccount.getId(), null, BigDecimal.valueOf(500000)));
+        assertFalse(accountRepository.transferMoney(firstAccount.getId(), null, BigDecimal.valueOf(500000)));
     }
 
     @Test
     public void whenSingleMoneyTransfer_thenAmountsAreCorrect() {
         accountRepository.transferMoney(secondAccount.getId(), firstAccount.getId(), BigDecimal.valueOf(25000));
-        Assert.assertEquals(BigDecimal.valueOf(125000), firstAccount.getAmount());
-        Assert.assertEquals(BigDecimal.valueOf(125000), secondAccount.getAmount());
+        assertEquals(BigDecimal.valueOf(125000), firstAccount.getAmount());
+        assertEquals(BigDecimal.valueOf(125000), secondAccount.getAmount());
     }
 
     @Test
@@ -106,9 +108,9 @@ public class InMemoryAccountRepositoryTest {
         t2.join();
         t3.join();
 
-        Assert.assertEquals(BigDecimal.valueOf(100000), firstAccount.getAmount());
-        Assert.assertEquals(BigDecimal.valueOf(100000), secondAccount.getAmount());
-        Assert.assertEquals(BigDecimal.valueOf(250000), thirdAccount.getAmount());
+        assertEquals(BigDecimal.valueOf(100000), firstAccount.getAmount());
+        assertEquals(BigDecimal.valueOf(100000), secondAccount.getAmount());
+        assertEquals(BigDecimal.valueOf(250000), thirdAccount.getAmount());
     }
 
 }

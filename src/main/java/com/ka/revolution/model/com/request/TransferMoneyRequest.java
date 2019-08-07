@@ -1,17 +1,15 @@
 package com.ka.revolution.model.com.request;
 
 import lombok.Data;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
-public class TransferRequest {
+@NoArgsConstructor
+public class TransferMoneyRequest {
 
-    @NonNull
     private Long destinationAccountId;
-
-    @NonNull
     private BigDecimal amount;
 
 }

@@ -1,7 +1,7 @@
 package com.ka.revolution.controller;
 
 import com.ka.revolution.model.com.request.SaveAccountRequest;
-import com.ka.revolution.model.com.request.TransferRequest;
+import com.ka.revolution.model.com.request.TransferMoneyRequest;
 import com.ka.revolution.model.com.response.GetAccountsResponse;
 import com.ka.revolution.model.persistence.Account;
 import com.ka.revolution.service.AccountService;
@@ -58,23 +58,25 @@ public class AccountController extends AbstractController {
     }
 
     @DynExpress(context = "/account/:id/transfer", method = RequestMethod.POST)
-    public void transfer(final Request request, final Response response) throws IOException {
-        final TransferRequest sendMoneyRequest = FileUtil
-                .convertJsonStreamToObject(request.getBody(), TransferRequest.class);
+    public void transferMoney(final Request request, final Response response) throws IOException {
+        final TransferMoneyRequest transferMoneyRequest = FileUtil
+                .convertJsonStreamToObject(request.getBody(), TransferMoneyRequest.class);
 
-        if (sendMoneyRequest == null) {
-            validateRequestBody(response, sendMoneyRequest);
-        } else if (sendMoneyRequest.getDestinationAccountId() == null) {
+        if (transferMoneyRequest == null) {
+            validateRequestBody(response, transferMoneyRequest);
+        } else if (transferMoneyRequest.getDestinationAccountId() == null) {
             sendErrorResponse(response, "Destination account id can not be empty", Status._400);
-        } else if (sendMoneyRequest.getAmount() == null || sendMoneyRequest.getAmount().compareTo(BigDecimal.ZERO) != 1) {
+        } else if (transferMoneyRequest.getAmount() == null
+                || transferMoneyRequest.getAmount().compareTo(BigDecimal.ZERO) != 1) {
             sendErrorResponse(response, "Amount can not be empty or negative", Status._400);
         } else {
             final Account originationAccount = findAccount(response, request.getParam(PARAMETER_ID));
-            final Account destinationAccount = findAccount(response, String.valueOf(sendMoneyRequest.getDestinationAccountId()));
+            final Account destinationAccount = findAccount(response,
+                    String.valueOf(transferMoneyRequest.getDestinationAccountId()));
 
             if (originationAccount != null && destinationAccount != null) {
                 try {
-                    accountService.transfer(originationAccount.getId(), sendMoneyRequest);
+                    accountService.transferMoney(originationAccount.getId(), transferMoneyRequest);
                     response.sendStatus(Status._200);
                 } catch (IllegalArgumentException exception) {
                     log.warn(exception.getMessage(), exception);

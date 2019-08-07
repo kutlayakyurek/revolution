@@ -1,7 +1,7 @@
 package com.ka.revolution.service;
 
 import com.ka.revolution.model.com.request.SaveAccountRequest;
-import com.ka.revolution.model.com.request.TransferRequest;
+import com.ka.revolution.model.com.request.TransferMoneyRequest;
 import com.ka.revolution.model.persistence.Account;
 
 import java.util.List;
@@ -14,6 +14,6 @@ public interface AccountService {
 
     List<Account> getAccounts();
 
-    void transfer(Long accountId, TransferRequest sendMoneyRequest);
+    void transferMoney(Long accountId, TransferMoneyRequest sendMoneyRequest);
 
 }
